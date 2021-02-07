@@ -1,0 +1,22 @@
+<div class="row d-flex flex-row fill-flex justify-content-center destination-header mb-3">
+  Select planets you want to search in
+</div>
+<div class="row">
+  <div class="col-md-3 d-flex flex-column" *ngFor="let destination of noOfDestinations; let i = index">
+    <app-destination [items]="planets" (planetChange)="selectedPlanets($event)"
+                     (vehicleChange)="selectedVehicles($event)"
+                     [allSelectedPlanets]="selectedPlanetsValues" [allSelectedVehicles]="selectedVehicleValues"
+                     [destinationId]="i">
+    </app-destination>
+  </div>
+</div>
+<div class="row">
+  <div class="d-flex flex-row justify-content-center flex-fill time-taken">
+    Time Taken: {{timeTaken | number: '1.0-0'}}
+  </div>
+</div>
+<div class="row">
+  <div class="d-flex flex-row justify-content-center flex-fill">
+    <button class="btn btn-primary" type="button" (click)="findFalcone()" [disabled]="disabledBtn">Find Falcone</button>
+  </div>
+</div>
