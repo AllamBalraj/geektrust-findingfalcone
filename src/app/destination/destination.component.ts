@@ -96,4 +96,8 @@ export class DestinationComponent implements OnChanges, OnInit {
     }
   }
 
+  getPlanetImage(planetName) {
+    return 'assets/images/' + planetName.toLowerCase() + '.png';
+  }
+
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../environments/environment';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {forkJoin, Observable} from 'rxjs';
 import {Planet} from '../app/interfaces/geekTrust';
 
@@ -9,7 +9,12 @@ import {Planet} from '../app/interfaces/geekTrust';
 })
 export class GeekTrustService {
 
-  baseUrl = environment.baseUrl;
+  private baseUrl = environment.baseUrl;
+  private httpOptions = {
+    headers: new HttpHeaders({
+      Accept: 'application/json'
+    })
+  };
 
   constructor(
     private httpClient: HttpClient
@@ -17,7 +22,7 @@ export class GeekTrustService {
   }
 
   getToken() {
-    return this.httpClient.post(this.baseUrl + '/token', {});
+    return this.httpClient.post(this.baseUrl + '/token', {}, this.httpOptions);
   }
 
   getPlanets() {
@@ -35,11 +40,12 @@ export class GeekTrustService {
   requestDataFromMultipleSources(): Observable<any[]> {
     const planets = this.getPlanets();
     const vehicles = this.geVehicles();
-    return forkJoin([planets, vehicles]);
+    const token = this.getToken();
+    return forkJoin([planets, vehicles, token]);
   }
 
   findFalcone(data) {
-    return this.httpClient.post(this.baseUrl + '/find', data);
+    return this.httpClient.post(this.baseUrl + '/find', data, this.httpOptions);
   }
 
 }

@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {GeekTrustService} from '../../services/geek-trust.service';
 import {DataService} from '../../services/data.service';
 import {Planet} from './../interfaces/geekTrust';
+import {SnotifyService} from 'ng-snotify';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-homepage',
@@ -19,7 +21,9 @@ export class HomepageComponent implements OnInit {
 
   constructor(
     private geekTrustService: GeekTrustService,
-    private dataService: DataService
+    private dataService: DataService,
+    private snotifyService: SnotifyService,
+    private router: Router
   ) {
   }
 
@@ -28,6 +32,7 @@ export class HomepageComponent implements OnInit {
       .subscribe(responseList => {
         this.planets = responseList[0];
         this.dataService.setVehicles(responseList[1]);
+        this.dataService.setToken(responseList[2].token);
       }, (err) => {
         console.log('error', err);
       });
@@ -47,7 +52,7 @@ export class HomepageComponent implements OnInit {
   checkBtnStatus() {
     if (this.selectedPlanetsValues.length === 4 && this.selectedVehicleValues.length === 4) {
       this.disabledBtn = false;
-    } else  {
+    } else {
       this.disabledBtn = true;
     }
   }
@@ -68,11 +73,13 @@ export class HomepageComponent implements OnInit {
     this.selectedVehicleValues.forEach(value => {
       vehicles.push(value.name);
     });
-    this.geekTrustService.findFalcone({'planet_names': planets, 'vehicle_names': vehicles})
+    this.geekTrustService.findFalcone({'planet_names': planets, 'vehicle_names': vehicles, 'token': this.dataService.getToken()})
       .subscribe(result => {
-        console.log('results', result);
+        this.dataService.setResult(result);
+        this.router.navigate(['result']);;
       }, (err) => {
-        console.log('err', err);
+        // @ts-ignore
+        this.snotifyService.error(err.error.error, 'Error', {position: 'rightTop'});
       });
   }
 
