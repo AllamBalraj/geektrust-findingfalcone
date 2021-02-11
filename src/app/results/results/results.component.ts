@@ -11,6 +11,7 @@ import {GeekTrustService} from '../../../services/geek-trust.service';
 export class ResultsComponent implements OnInit {
 
   timeTaken = null;
+  results = null;
 
   constructor(
     private dataService: DataService,
@@ -34,6 +35,7 @@ export class ResultsComponent implements OnInit {
     this.geekTrustService.findFalcone({planet_names: planets, vehicle_names: vehicles, token: this.dataService.getToken()})
       .subscribe(result => {
         console.log('result', result);
+        this.results = result;
       }, (err) => {
         // @ts-ignore
         this.snotifyService.error(err.error.error, 'Error', {position: 'rightTop'});
@@ -54,6 +56,10 @@ export class ResultsComponent implements OnInit {
 
   goToHomepage() {
     this.router.navigate(['/']);
+  }
+
+  getPlanetUrl(planetName) {
+    return 'assets/images/' + planetName.toLowerCase() + '.png';
   }
 
 }

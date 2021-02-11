@@ -1,12 +1,29 @@
-<div class="row d-flex flex-row fill-flex justify-content-center destination-header mb-3">
-  Success! Congratulations on Finding Falcone. King Shah is mighty pleased.
-</div>
-<div class="row d-flex flex-row fill-flex justify-content-center destination-header mb-3">
-  Time Taken: 200
-</div>
-<div class="row d-flex flex-row fill-flex justify-content-center destination-header mb-3">
-  Planet found: Donlon
-</div>
-<div class="row d-flex flex-row fill-flex justify-content-center destination-header mb-3">
-  <button type="button" class="btn btn-primary" (click)="goToHomepage()">Start Again</button>
-</div>
+<ng-container *ngIf="results">
+  <div class="row">
+    <div class="col-md-12 d-flex flex-fill justify-content-center result-header">
+      <span *ngIf="results.status === 'success'" class="text-success">HELL YEAH!.. FALCONE FOUND.</span>
+      <span *ngIf="results.status === 'false'" class="text-danger">DANG IT!.. COULD FIND FALCONE.</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 d-flex flex-fill justify-content-center result-sub-header mb-3">
+      <span *ngIf="results.status === 'success'">Congratulations on Finding Falcone. King Shah is mighty pleased.</span>
+      <span *ngIf="results.status === 'false'">King Shah got disappointed. You can try again.</span>
+    </div>
+  </div>
+  <div class="row d-flex flex-row fill-flex justify-content-center destination-header mb-3">
+    <span *ngIf="timeTaken">Time Taken: {{timeTaken}}</span>
+  </div>
+  <div class="row d-flex flex-column fill-flex justify-content-center destination-header mb-3 planet-info" *ngIf="results.status === 'success'">
+    <div class="d-flex flex-column align-items-center">
+      <div class="mb-3"><img [src]="getPlanetUrl(results.planet_name)" alt="" class="planet-image"></div>
+      <div class="planet-name">Found on {{results.planet_name}}</div>
+    </div>
+  </div>
+  <div class="row d-flex flex-row fill-flex justify-content-center destination-header mb-3">
+    <button type="button" class="btn btn-primary" (click)="goToHomepage()">
+      <span *ngIf="results.status === 'false'">Try Again</span>
+      <span *ngIf="results.status === 'success'">Start Again</span>
+    </button>
+  </div>
+</ng-container>

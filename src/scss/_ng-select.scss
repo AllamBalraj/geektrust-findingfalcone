@@ -5,7 +5,6 @@
   .ng-dropdown-panel {
     animation: growDown 100ms ease-in-out forwards;
     transform-origin: top center;
-    border: 0 !important;
   }
   @keyframes growDown {
     0% {

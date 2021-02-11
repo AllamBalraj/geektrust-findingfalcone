@@ -5,3 +5,13 @@
 @import "scss/variables";
 @import "scss/helpers";
 @import "scss/ng-select";
+
+body {
+  background-image: url('/assets/images/bg-image.PNG');
+  height: 100%;
+  background-position: center;
+  background-repeat: repeat;
+  min-height: 100vh;
+  font-family: signika;
+  color: white;
+}
