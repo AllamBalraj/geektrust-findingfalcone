@@ -1,0 +1,10 @@
+<ng-select [items]="availablePlanets" placeholder="Type to search/select spaceships" bindLabel="name" bindValue="name"
+           (change)="onChange($event)"
+           [clearable]=false>
+  <ng-template ng-label-tmp let-item="item">
+    <img height="20" width="20" [src]="getPlanetImage(item.name)"/> {{item.name}}
+  </ng-template>
+  <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+    <img [src]="getPlanetImage(item.name)" width="20" height="20" alt="{{item.name}}"> {{item.name}}
+  </ng-template>
+</ng-select>

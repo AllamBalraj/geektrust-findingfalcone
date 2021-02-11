@@ -11,6 +11,9 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { ResultComponent } from './result/result.component';
+import { DestinationsComponent } from './destinations/destinations.component';
+import { PlanetsComponent } from './destinations/planets/planets.component';
+import { VehiclesComponent } from './destinations/vehicles/vehicles.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,10 @@ import { ResultComponent } from './result/result.component';
     HomepageComponent,
     HeaderComponent,
     FooterComponent,
-    ResultComponent
+    ResultComponent,
+    DestinationsComponent,
+    PlanetsComponent,
+    VehiclesComponent
   ],
   imports: [
     BrowserModule,

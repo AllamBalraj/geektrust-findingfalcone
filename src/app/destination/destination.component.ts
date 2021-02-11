@@ -20,6 +20,10 @@ export class DestinationComponent implements OnChanges, OnInit {
   planets: Planet[] = [];
   vehicles: Vehicle[] = [];
 
+  /****/
+  @Input() destination;
+  selectedPlanetsAndVehicles = [];
+
   constructor(
     private dataService: DataService
   ) {

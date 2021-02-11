@@ -4,6 +4,7 @@ import {DataService} from '../../services/data.service';
 import {Planet} from './../interfaces/geekTrust';
 import {SnotifyService} from 'ng-snotify';
 import {Router} from '@angular/router';
+import {PlanetVehicleContainer} from '../models/planet-vehicle-block';
 
 @Component({
   selector: 'app-homepage',
@@ -18,6 +19,7 @@ export class HomepageComponent implements OnInit {
   noOfDestinations = Array.from(Array(4).keys());
   timeTaken = 0;
   disabledBtn = true;
+  destinations = null;
 
   constructor(
     private geekTrustService: GeekTrustService,
@@ -28,9 +30,12 @@ export class HomepageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initializePlanetAndVehicleBlocks();
+    this.subscribeToBlocks();
     this.geekTrustService.requestDataFromMultipleSources()
       .subscribe(responseList => {
         this.planets = responseList[0];
+        this.dataService.setPlanets(responseList[0]);
         this.dataService.setVehicles(responseList[1]);
         this.dataService.setToken(responseList[2].token);
       }, (err) => {
@@ -38,30 +43,43 @@ export class HomepageComponent implements OnInit {
       });
   }
 
-  selectedPlanets($event) {
-    this.selectedPlanetsValues = [...$event];
-    this.checkBtnStatus();
-  }
-
-  selectedVehicles($event) {
-    this.selectedVehicleValues = [...$event];
-    this.checkBtnStatus();
-    this.calculateTime();
-  }
-
-  checkBtnStatus() {
-    if (this.selectedPlanetsValues.length === 4 && this.selectedVehicleValues.length === 4) {
-      this.disabledBtn = false;
-    } else {
-      this.disabledBtn = true;
+  initializePlanetAndVehicleBlocks() {
+    const data = [];
+    for (let i = 1; i <= 4; i++) {
+      const obj = new PlanetVehicleContainer();
+      obj.id = i;
+      obj.planet = null;
+      obj.vehicle = null;
+      obj.planetDistance = null;
+      obj.vehicleSpeed = null;
+      data.push(obj);
     }
+    this.dataService.setSelectedPlanetAndVehicle(data);
+    this.subscribeToCalculateTime();
   }
 
-  calculateTime() {
-    this.timeTaken = 0;
-    this.selectedVehicleValues.forEach(value => {
-      this.timeTaken = this.timeTaken + (value.planetDistance / value.speed);
-    });
+  subscribeToBlocks() {
+    this.dataService.getSelectedPlanetAndVehicle()
+      .subscribe(response => {
+        this.destinations = response;
+      });
+  }
+
+  subscribeToCalculateTime() {
+    this.dataService.getSelectedPlanetAndVehicle()
+      .subscribe(response => {
+        console.log('calculateTime', response);
+        this.timeTaken = 0;
+        response.forEach(value => {
+          this.calculateTime(value);
+        });
+      });
+  }
+
+  calculateTime(value) {
+    if (value.planetDistance && value.vehicleSpeed) {
+      this.timeTaken = this.timeTaken + (value.planetDistance / value.vehicleSpeed);
+    }
   }
 
   findFalcone() {
@@ -73,10 +91,10 @@ export class HomepageComponent implements OnInit {
     this.selectedVehicleValues.forEach(value => {
       vehicles.push(value.name);
     });
-    this.geekTrustService.findFalcone({'planet_names': planets, 'vehicle_names': vehicles, 'token': this.dataService.getToken()})
+    this.geekTrustService.findFalcone({planet_names: planets, vehicle_names: vehicles, token: this.dataService.getToken()})
       .subscribe(result => {
         this.dataService.setResult(result);
-        this.router.navigate(['result']);;
+        this.router.navigate(['result']);
       }, (err) => {
         // @ts-ignore
         this.snotifyService.error(err.error.error, 'Error', {position: 'rightTop'});

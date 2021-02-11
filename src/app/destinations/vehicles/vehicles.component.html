@@ -1,0 +1,11 @@
+<ng-container *ngIf="destination.planet">
+  <div class="form-check" *ngFor="let v of vehicles">
+    <input class="form-check-input" type="radio" name="vehicle_{{destination.id}}" id={{destination.id}}_{{v.name}}
+           (change)="onChangeVehicle(v)"
+           [disabled]="checkDisabled(v)"
+           [checked]="destination.vehicle && destination.vehicle === v.name">
+    <label class="form-check-label" for={{destination.id}}_{{v.name}}>
+      {{v.name}}({{v.total_no}})
+    </label>
+  </div>
+</ng-container>
