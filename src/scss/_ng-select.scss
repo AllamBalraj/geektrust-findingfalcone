@@ -1,0 +1,21 @@
+.ng-select {
+  .ng-select-container {
+    border-radius: 0;
+  }
+  .ng-dropdown-panel {
+    animation: growDown 100ms ease-in-out forwards;
+    transform-origin: top center;
+    border: 0 !important;
+  }
+  @keyframes growDown {
+    0% {
+      transform: scaleY(0)
+    }
+    80% {
+      transform: scaleY(1.1)
+    }
+    100% {
+      transform: scaleY(1)
+    }
+  }
+}

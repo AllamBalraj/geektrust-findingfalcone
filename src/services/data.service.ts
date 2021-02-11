@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {Planet, SelectedPlanetAndVehicle, Vehicle} from '../app/interfaces/geekTrust';
+import {PlanetVehicleContainer} from '../app/models/planet-vehicle-block';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,25 @@ export class DataService {
   private planets$: BehaviorSubject<Planet[]> = new BehaviorSubject([]);
   private token$: BehaviorSubject<string> = new BehaviorSubject(null);
   private result$: BehaviorSubject<any> = new BehaviorSubject(null);
-
-  private selectedPlanetAndVehicle$: BehaviorSubject<SelectedPlanetAndVehicle[]> = new BehaviorSubject<SelectedPlanetAndVehicle[]>([]);
+  public selectedPlanetAndVehicle$: BehaviorSubject<SelectedPlanetAndVehicle[]> = new BehaviorSubject<SelectedPlanetAndVehicle[]>([]);
+  private timeTaken: BehaviorSubject<number> = new BehaviorSubject<number>(null);
+  private defaultVehicleStock = null;
 
   constructor() {
+  }
+
+  setDefaultValues() {
+    const data = [];
+    for (let i = 1; i <= 4; i++) {
+      const obj = new PlanetVehicleContainer();
+      obj.id = i;
+      obj.planet = null;
+      obj.vehicle = null;
+      obj.planetDistance = null;
+      obj.vehicleSpeed = null;
+      data.push(obj);
+    }
+    this.setSelectedPlanetAndVehicle(data);
   }
 
   setToken(data) {
@@ -41,12 +57,12 @@ export class DataService {
     return this.vehicles$.asObservable();
   }
 
-  setResult(data) {
-    this.result$.next(data);
-  }
-
-  getResult() {
-    return this.result$.asObservable();
+  resetVehicleStock(reset, vehicleStock?) {
+    if (reset) {
+      this.setVehicles(this.defaultVehicleStock);
+    } else {
+      this.defaultVehicleStock = JSON.parse(JSON.stringify(vehicleStock));
+    }
   }
 
   setSelectedPlanetAndVehicle(data) {
@@ -91,6 +107,14 @@ export class DataService {
       data[i].total_no = data[i].total_no - 1;
     }
     this.setVehicles(data);
+  }
+
+  setTimeTaken(data) {
+    this.timeTaken.next(data);
+  }
+
+  getTimeTaken() {
+    return this.timeTaken.asObservable();
   }
 
 }

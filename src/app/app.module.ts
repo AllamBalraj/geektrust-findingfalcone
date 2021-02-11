@@ -5,12 +5,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {NgSelectModule} from '@ng-select/ng-select';
-import { DestinationComponent } from './destination/destination.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
-import { ResultComponent } from './result/result.component';
 import { DestinationsComponent } from './destinations/destinations.component';
 import { PlanetsComponent } from './destinations/planets/planets.component';
 import { VehiclesComponent } from './destinations/vehicles/vehicles.component';
@@ -18,11 +16,9 @@ import { VehiclesComponent } from './destinations/vehicles/vehicles.component';
 @NgModule({
   declarations: [
     AppComponent,
-    DestinationComponent,
     HomepageComponent,
     HeaderComponent,
     FooterComponent,
-    ResultComponent,
     DestinationsComponent,
     PlanetsComponent,
     VehiclesComponent

@@ -4,7 +4,6 @@ import {DataService} from '../../services/data.service';
 import {Planet} from './../interfaces/geekTrust';
 import {SnotifyService} from 'ng-snotify';
 import {Router} from '@angular/router';
-import {PlanetVehicleContainer} from '../models/planet-vehicle-block';
 
 @Component({
   selector: 'app-homepage',
@@ -13,10 +12,7 @@ import {PlanetVehicleContainer} from '../models/planet-vehicle-block';
 })
 export class HomepageComponent implements OnInit {
 
-  selectedPlanetsValues = [];
-  selectedVehicleValues = [];
   planets: Planet[] = [];
-  noOfDestinations = Array.from(Array(4).keys());
   timeTaken = 0;
   disabledBtn = true;
   destinations = null;
@@ -38,23 +34,15 @@ export class HomepageComponent implements OnInit {
         this.dataService.setPlanets(responseList[0]);
         this.dataService.setVehicles(responseList[1]);
         this.dataService.setToken(responseList[2].token);
+        this.dataService.resetVehicleStock(false, responseList[1]);
       }, (err) => {
-        console.log('error', err);
+        // @ts-ignore
+        this.snotifyService.error(err.message, 'Error', {position: 'rightTop'});
       });
   }
 
   initializePlanetAndVehicleBlocks() {
-    const data = [];
-    for (let i = 1; i <= 4; i++) {
-      const obj = new PlanetVehicleContainer();
-      obj.id = i;
-      obj.planet = null;
-      obj.vehicle = null;
-      obj.planetDistance = null;
-      obj.vehicleSpeed = null;
-      data.push(obj);
-    }
-    this.dataService.setSelectedPlanetAndVehicle(data);
+    this.dataService.setDefaultValues();
     this.subscribeToCalculateTime();
   }
 
@@ -68,8 +56,8 @@ export class HomepageComponent implements OnInit {
   subscribeToCalculateTime() {
     this.dataService.getSelectedPlanetAndVehicle()
       .subscribe(response => {
-        console.log('calculateTime', response);
         this.timeTaken = 0;
+        this.checkBtnStatus(response);
         response.forEach(value => {
           this.calculateTime(value);
         });
@@ -82,23 +70,14 @@ export class HomepageComponent implements OnInit {
     }
   }
 
+  checkBtnStatus(values) {
+    const index = values.findIndex(v => v.vehicle === null);
+    this.disabledBtn = index !== -1;
+  }
+
   findFalcone() {
-    const planets = [];
-    const vehicles = [];
-    this.selectedPlanetsValues.forEach(value => {
-      planets.push(value.name);
-    });
-    this.selectedVehicleValues.forEach(value => {
-      vehicles.push(value.name);
-    });
-    this.geekTrustService.findFalcone({planet_names: planets, vehicle_names: vehicles, token: this.dataService.getToken()})
-      .subscribe(result => {
-        this.dataService.setResult(result);
-        this.router.navigate(['result']);
-      }, (err) => {
-        // @ts-ignore
-        this.snotifyService.error(err.error.error, 'Error', {position: 'rightTop'});
-      });
+    this.dataService.setTimeTaken(this.timeTaken);
+    this.router.navigate(['result']);
   }
 
 }
